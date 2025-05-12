@@ -1,4 +1,4 @@
-import { Browser } from '@cloudflare/puppeteer';
+import { Browser, Page } from '@cloudflare/puppeteer';
 
 export function isValidUrl(url: string | null): boolean {
 	if (!url) {
@@ -35,19 +35,55 @@ export function formatAccessibilityResults(results: any) {
 }
 
 // Setup a new page with specific user agent and viewport settings to simulate a desktop browser
-export async function setupPage(browser: Browser) {
+export async function setupPage({ browser, isMobile }: { browser: Browser; isMobile: boolean }) {
 	const page = await browser.newPage();
-	page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36');
-	page.setViewport({
-		width: 1920,
-		height: 1080,
-		deviceScaleFactor: 1,
-		isMobile: false,
-		hasTouch: false,
-		isLandscape: true,
-	});
+
+	if (isMobile) {
+		await page.setUserAgent(
+			'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1'
+		);
+		await page.setViewport({
+			width: 375,
+			height: 812,
+			deviceScaleFactor: 2,
+			isMobile: true,
+			hasTouch: true,
+			isLandscape: false,
+		});
+	} else {
+		page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36');
+		page.setViewport({
+			width: 1920,
+			height: 1080,
+			deviceScaleFactor: 1,
+			isMobile: false,
+			hasTouch: false,
+			isLandscape: true,
+		});
+	}
 
 	// Bypass Content Security Policy (CSP) for the page, often necessary to allow injected scripts like axe-core to run
 	await page.setBypassCSP(true);
 	return page;
+}
+
+export async function performAccessibilityTest(page: Page, targetUrl: string) {
+	const axeScriptUrl = 'https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.10.3/axe.min.js';
+	await page.goto(targetUrl, {
+		waitUntil: 'networkidle0', // Wait until network activity is idle, indicating the page has loaded
+		timeout: 10000,
+	});
+	await page.addScriptTag({ url: axeScriptUrl });
+	await page.waitForFunction('window.axe !== undefined', {
+		timeout: 15000,
+	});
+	const accessibilityResults = await page.evaluate(async () => {
+		// window.axe.configure({ })
+
+		// @ts-ignore // Tell TypeScript to ignore that 'axe' is not defined in Worker's scope
+		return await window.axe.run();
+		// To scan specific parts of the page, you can pass a context:
+		// return await window.axe.run(document.body, { /* options */ });
+	});
+	return accessibilityResults;
 }
