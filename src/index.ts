@@ -7,20 +7,34 @@ interface Env {
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		const { searchParams } = new URL(request.url);
-		let targetUrl = searchParams.get('url');
+		if (request.method !== 'POST') {
+			return new Response('Method Not Allowed', {
+				status: 405,
+				headers: {
+					Allow: 'POST',
+					'Content-Type': 'text/plain',
+				},
+			});
+		}
 
-		if (!isValidUrl(targetUrl)) {
+		const input = (await request.json()) as Input;
+		const targetUrl = input.url;
+
+		if (typeof targetUrl !== 'string' || !isValidUrl(targetUrl)) {
 			return new Response('Invalid URL format.', {
 				status: 400,
 			});
-		} else {
-			targetUrl = targetUrl!.trim() as string;
 		}
 
 		const browser = await puppeteer.launch(env.MYBROWSER);
-		const page = await setupPage({ browser, isMobile: false });
-		const mobilePage = await setupPage({ browser, isMobile: true });
+
+		const pageConfig = {
+			browser,
+			blocklist: input.blocklist || [],
+		};
+
+		const page = await setupPage({ ...pageConfig, isMobile: false });
+		const mobilePage = await setupPage({ ...pageConfig, isMobile: true });
 
 		let [accessibilityResults, accessibilityResultsMobile] = [null, null];
 

@@ -1,10 +1,6 @@
 import { Browser, Page } from '@cloudflare/puppeteer';
 
-export function isValidUrl(url: string | null): boolean {
-	if (!url) {
-		return false;
-	}
-
+export function isValidUrl(url: string): boolean {
 	try {
 		new URL(url);
 		return true;
@@ -35,7 +31,7 @@ export function formatAccessibilityResults(results: any) {
 }
 
 // Setup a new page with specific user agent and viewport settings to simulate a desktop browser
-export async function setupPage({ browser, isMobile }: { browser: Browser; isMobile: boolean }) {
+export async function setupPage({ browser, isMobile, blocklist }: { browser: Browser; isMobile: boolean; blocklist?: string[] }) {
 	const page = await browser.newPage();
 
 	if (isMobile) {
@@ -65,15 +61,10 @@ export async function setupPage({ browser, isMobile }: { browser: Browser; isMob
 	// Bypass Content Security Policy (CSP) for the page, often necessary to allow injected scripts like axe-core to run
 	await page.setBypassCSP(true);
 
-	await blockScripts(page, [
-		'consent.cookiebot.com',
-		'visualwebsiteoptimizer.com',
-		'inzicht.cz.nl',
-		'czgroep.containers.piwik.pro',
-		'w.usabilla.com',
-		'siteimproveanalytics.com',
-		'piwik',
-	]); // Block scripts to prevent loading of unnecessary resources
+	// Block scripts to prevent loading of unnecessary resources and blocking cookie consent scripts etc
+	if (Array.isArray(blocklist) && blocklist.length > 0) {
+		await blockScripts(page, blocklist);
+	}
 
 	return page;
 }
