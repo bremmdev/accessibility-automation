@@ -64,7 +64,31 @@ export async function setupPage({ browser, isMobile }: { browser: Browser; isMob
 
 	// Bypass Content Security Policy (CSP) for the page, often necessary to allow injected scripts like axe-core to run
 	await page.setBypassCSP(true);
+
+	await blockScripts(page, [
+		'consent.cookiebot.com',
+		'visualwebsiteoptimizer.com',
+		'inzicht.cz.nl',
+		'czgroep.containers.piwik.pro',
+		'w.usabilla.com',
+		'siteimproveanalytics.com',
+		'piwik',
+	]); // Block scripts to prevent loading of unnecessary resources
+
 	return page;
+}
+
+//block specific script from loading, useful for blocking cookie consent scripts etc
+//blocklist: array of urls, domain names or files names to match against the request URL
+export async function blockScripts(page: Page, blocklist: string[] = []) {
+	await page.setRequestInterception(true);
+	page.on('request', (request) => {
+		if (request.resourceType() === 'script' && blocklist.some((url) => request.url().includes(url))) {
+			request.abort();
+		} else {
+			request.continue();
+		}
+	});
 }
 
 export async function performAccessibilityTest(page: Page, targetUrl: string) {
