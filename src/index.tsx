@@ -1,16 +1,19 @@
 import { Hono } from 'hono';
-import puppeteer, { Browser } from '@cloudflare/puppeteer';
+import puppeteer from '@cloudflare/puppeteer';
 import { formatAccessibilityResults, isValidUrl, performAccessibilityTest, setupPage } from './utils';
+import { renderer } from './renderer';
+import Home from './pages/home';
 
 interface Env {
 	MYBROWSER: Fetcher;
 }
 
 const app = new Hono<{ Bindings: Env }>();
+app.use(renderer);
 
 // FRONTEND
 
-app.get('/', (c) => c.text('Hello Cloudflare Workers!'));
+app.get('/', (c) => c.render(<Home />));
 
 // ACCESSIBILITY TESTING
 

@@ -1,11 +1,6 @@
-import { defineWorkersConfig } from '@cloudflare/vitest-pool-workers/config';
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'vite';
 
-export default defineWorkersConfig({
-	test: {
-		poolOptions: {
-			workers: {
-				wrangler: { configPath: './wrangler.jsonc' },
-			},
-		},
-	},
+export default defineConfig({
+	plugins: [tailwindcss()],
 });

@@ -11,6 +11,10 @@
 	"browser": {
 		"binding": "MYBROWSER"
 	},
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS"
+	},
 	"routes": [
 		{
 			"pattern": "a11y-test.bremmdev.me",

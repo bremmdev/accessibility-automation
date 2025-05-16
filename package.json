@@ -3,21 +3,23 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler dev",
+		"deploy": "npx tailwindcss -i ./src/style.css -o ./dist/output.css && wrangler deploy",
+		"dev": "concurrently \"npx tailwindcss -i ./src/style.css -o ./dist/output.css --watch\" \"wrangler dev --remote\"",
 		"start": "wrangler dev",
 		"test": "vitest",
 		"cf-typegen": "wrangler types"
 	},
 	"devDependencies": {
 		"@cloudflare/puppeteer": "^1.0.2",
-		"@cloudflare/vitest-pool-workers": "^0.8.19",
 		"@cloudflare/workers-types": "^4.20250510.0",
+		"@tailwindcss/cli": "^4.1.7",
+		"concurrently": "^9.1.2",
 		"typescript": "^5.5.2",
-		"vitest": "~3.0.7",
 		"wrangler": "^4.14.4"
 	},
 	"dependencies": {
-		"hono": "^4.7.9"
+		"@tailwindcss/vite": "^4.1.7",
+		"hono": "^4.7.9",
+		"tailwindcss": "^4.1.7"
 	}
 }
