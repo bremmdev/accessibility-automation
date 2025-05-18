@@ -3,6 +3,7 @@ import puppeteer from '@cloudflare/puppeteer';
 import { formatAccessibilityResults, isValidUrl, performAccessibilityTest, setupPage } from './utils';
 import { renderer } from './renderer';
 import Home from './pages/home';
+import AccessibilityTestForm from './components/AccessibilityTestForm';
 
 interface Env {
 	MYBROWSER: Fetcher;
@@ -19,19 +20,28 @@ app.get('/', (c) => c.render(<Home />));
 
 app.post('api/accessibility', async (c) => {
 	const input = (await c.req.json()) as Input;
+	const isHTMXRequest = c.req.header('HX-Request') === 'true';
 	const targetUrl = input.url;
 
+	const blocklist = (input.blocklist ? JSON.parse(input.blocklist) : []) as string[];
+
 	if (typeof targetUrl !== 'string' || !isValidUrl(targetUrl)) {
-		return new Response('Invalid URL format.', {
-			status: 400,
-		});
+		if (!isHTMXRequest)
+			return new Response('Invalid URL format.', {
+				status: 400,
+			});
+
+		// If it's an HTMX request, return the form with an error message
+		c.header('HX-Retarget', '#accessibility-form');
+		c.header('HX-Reswap', 'outerHTML');
+		return c.html(<AccessibilityTestForm error="Invalid URL format." url={targetUrl} blocklist={blocklist} />);
 	}
 
 	const browser = await puppeteer.launch(c.env.MYBROWSER);
 
 	const pageConfig = {
 		browser,
-		blocklist: input.blocklist || [],
+		blocklist,
 	};
 
 	const page = await setupPage({ ...pageConfig, isMobile: false });

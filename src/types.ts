@@ -1,4 +1,4 @@
 type Input = {
 	url: string;
-	blocklist?: string[];
+	blocklist?: string; // stringified array
 };
