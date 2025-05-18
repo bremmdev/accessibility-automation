@@ -308,6 +308,9 @@
     }
   }
 }
+button {
+  cursor: pointer;
+}
 @property --tw-rotate-x {
   syntax: "*";
   inherits: false;

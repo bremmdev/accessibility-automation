@@ -5,8 +5,6 @@ type Props = {
 };
 
 export default function AccessibilityTestForm({ url, blocklist, error }: Props) {
-	console.log('hierrr', typeof blocklist);
-
 	return (
 		<form
 			id="accessibility-form"
@@ -42,7 +40,11 @@ export default function AccessibilityTestForm({ url, blocklist, error }: Props) 
 			<button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
 				Start Accessibility Test
 			</button>
-			{error && <div class="text-red-500 mt-4">{error}</div>}
+			{error && (
+				<div id="accessibility-form-error" className="text-red-500 mt-4">
+					{error}
+				</div>
+			)}
 		</form>
 	);
 }

@@ -1,9 +1,19 @@
 const accessibilityForm = document.querySelector('#accessibility-form');
 
+function clearFormOnSubmit() {
+	// Clear the form on submit
+	const formError = document.querySelector('#accessibility-form-error');
+	if (formError) {
+		formError.innerHTML = '';
+	}
+	document.querySelector('#results').innerHTML = '';
+}
+
 // Use configRequest event to modify the request before it is sent and convert textarea input to JSON
 document.body.addEventListener('htmx:configRequest', function (event) {
 	if (event.detail.elt.id === 'accessibility-form') {
-		console.log(event);
+		clearFormOnSubmit();
+
 		// Get current value of 'blocklist' from the form submission
 		const blocklistText = event.detail.parameters.blocklist;
 
