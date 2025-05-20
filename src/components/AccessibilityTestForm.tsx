@@ -11,6 +11,7 @@ export default function AccessibilityTestForm({ url, blocklist, error }: Props) 
 			hx-post="/api/accessibility"
 			hx-target="#results"
 			hx-swap="innerHTML"
+			hx-indicator=".spinner"
 			hx-ext="json-enc"
 			className="w-full"
 		>
@@ -38,8 +39,17 @@ export default function AccessibilityTestForm({ url, blocklist, error }: Props) 
 				{blocklist?.join('\n') ?? ''}
 			</textarea>
 
-			<button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-				Start Accessibility Test
+			<button
+				type="submit"
+				class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 relative disabled:opacity-70 disabled:cursor-not-allowed"
+			>
+				Start Accessibility Test{' '}
+				<span
+					id="accessibility-form-spinner"
+					className="absolute inset-0 bg-blue-500 hidden items-center justify-items-center z-10 rounded has-[.htmx-request]:grid"
+				>
+					<span className="spinner animate-spin rounded-full border-2 border-t-2 border-t-blue-500 border-gray-200 size-6"></span>
+				</span>
 			</button>
 			<span id="accessibility-form-status" className="ml-2"></span>
 

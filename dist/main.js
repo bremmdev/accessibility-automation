@@ -47,6 +47,8 @@ document.body.addEventListener('htmx:configRequest', function (event) {
 
 			// Force HTMX to process the new attributes
 			htmx.process(submitButton);
+
+			submitButton.setAttribute('disabled', 'disabled');
 		}
 	}
 });
@@ -60,6 +62,7 @@ document.body.addEventListener('htmx:afterRequest', function (event) {
 			submitButton.removeAttribute('hx-trigger');
 			submitButton.removeAttribute('hx-swap');
 			submitButton.removeAttribute('hx-target');
+			submitButton.removeAttribute('disabled');
 
 			// Force HTMX to process the new attributes
 			htmx.process(submitButton);
