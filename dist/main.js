@@ -32,5 +32,38 @@ document.body.addEventListener('htmx:configRequest', function (event) {
 
 		// Update the 'blocklist' parameter that will be sent to the server
 		event.detail.parameters.blocklist = JSON.stringify(processedBlocklistPayload);
+
+		// Add unique ID to the form submission for tracking status
+		const id = crypto.randomUUID();
+		event.detail.parameters.id = id;
+
+		// Add
+		const submitButton = accessibilityForm.querySelector('button[type="submit"]');
+		if (submitButton) {
+			submitButton.setAttribute('hx-get', `/api/accessibility/${id}`);
+			submitButton.setAttribute('hx-trigger', 'every 1s');
+			submitButton.setAttribute('hx-swap', 'innerHTML');
+			submitButton.setAttribute('hx-target', '#accessibility-form-status');
+
+			// Force HTMX to process the new attributes
+			htmx.process(submitButton);
+		}
+	}
+});
+
+document.body.addEventListener('htmx:afterRequest', function (event) {
+	// remove the status polling
+	if (event.detail.elt.id === 'accessibility-form') {
+		const submitButton = accessibilityForm.querySelector('button[type="submit"]');
+		if (submitButton) {
+			submitButton.removeAttribute('hx-get');
+			submitButton.removeAttribute('hx-trigger');
+			submitButton.removeAttribute('hx-swap');
+			submitButton.removeAttribute('hx-target');
+
+			// Force HTMX to process the new attributes
+			htmx.process(submitButton);
+		}
+		document.querySelector('#accessibility-form-status').innerHTML = '';
 	}
 });

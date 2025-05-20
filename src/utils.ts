@@ -82,12 +82,13 @@ export async function blockScripts(page: Page, blocklist: string[] = []) {
 	});
 }
 
-export async function performAccessibilityTest(page: Page, targetUrl: string) {
+export async function performAccessibilityTest(page: Page, targetUrl: string, id: string, KV: KVNamespace) {
 	const axeScriptUrl = 'https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.10.3/axe.min.js';
 	await page.goto(targetUrl, {
 		waitUntil: 'networkidle0', // Wait until network activity is idle, indicating the page has loaded
-		timeout: 10000,
+		timeout: 20000,
 	});
+	await updateTestStatus(KV, id, 'navigated to page');
 	await page.addScriptTag({ url: axeScriptUrl });
 	await page.waitForFunction('window.axe !== undefined', {
 		timeout: 15000,
@@ -100,5 +101,13 @@ export async function performAccessibilityTest(page: Page, targetUrl: string) {
 		// To scan specific parts of the page, you can pass a context:
 		// return await window.axe.run(document.body, { /* options */ });
 	});
+	await updateTestStatus(KV, id, 'obtained results');
 	return accessibilityResults;
+}
+
+export async function updateTestStatus(KV: KVNamespace, id: string, status: string) {
+	// Update the status of the test in the database or any other storage
+	// This is a placeholder function, implement your own logic here
+	console.log(`Test ID: ${id}, Status: ${status}`);
+	await KV.put(id, status);
 }

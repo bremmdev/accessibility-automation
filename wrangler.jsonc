@@ -11,6 +11,13 @@
 	"browser": {
 		"binding": "MYBROWSER"
 	},
+	"kv_namespaces": [
+		{
+			"binding": "KV",
+			"id": "eea308c801ec4ba38d522c96ec3e0e23",
+			"preview_id": "2f49341490ca43929f056e9fda18d15a"
+		}
+	],
 	"assets": {
 		"directory": "./dist",
 		"binding": "ASSETS"

@@ -37,9 +37,12 @@ export default function AccessibilityTestForm({ url, blocklist, error }: Props) 
 			>
 				{blocklist?.join('\n') ?? ''}
 			</textarea>
+
 			<button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
 				Start Accessibility Test
 			</button>
+			<span id="accessibility-form-status" className="ml-2"></span>
+
 			{error && (
 				<div id="accessibility-form-error" className="text-red-500 mt-4">
 					{error}
