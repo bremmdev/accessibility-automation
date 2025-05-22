@@ -46,8 +46,6 @@ document.body.addEventListener('htmx:configRequest', function (event) {
 document.body.addEventListener('htmx:afterRequest', function (event) {
 	// remove the status polling
 	if (event.detail.elt.id === ACCESSBILITY_FORM) {
-		removePollingAttributes();
-		document.querySelector('#accessibility-form-status').innerHTML = '';
 		const submitButton = event.detail.elt.querySelector('button[type="submit"]');
 		if (submitButton) {
 			submitButton.removeAttribute('disabled');
@@ -62,6 +60,7 @@ function clearFormOnSubmit() {
 		formError.innerHTML = '';
 	}
 	document.querySelector('#results').innerHTML = '';
+	document.querySelector('#accessibility-form-status').innerHTML = '';
 }
 
 function addPollingAttributes(id) {
@@ -69,22 +68,11 @@ function addPollingAttributes(id) {
 
 	if (!statusPoller) return;
 
-	statusPoller.setAttribute('hx-get', `/api/accessibility/${id}`);
-	statusPoller.setAttribute('hx-trigger', 'every 1s');
-	statusPoller.setAttribute('hx-swap', 'innerHTML');
-
-	// Force HTMX to process the new attributes
-	htmx.process(statusPoller);
-}
-
-function removePollingAttributes() {
-	const statusPoller = document.querySelector('#accessibility-form-status');
-
-	if (!statusPoller) return;
-
-	statusPoller.removeAttribute('hx-get');
-	statusPoller.removeAttribute('hx-trigger');
-	statusPoller.removeAttribute('hx-swap');
+	statusPoller.setAttribute('hx-ext', 'sse');
+	statusPoller.setAttribute('sse-connect', `/api/accessibility/status/${id}`);
+	statusPoller.setAttribute('sse-swap', 'status-update');
+	statusPoller.setAttribute('sse-close', 'fulfilled');
+	statusPoller.setAttribute('hx-target', '#accessibility-form-status');
 
 	// Force HTMX to process the new attributes
 	htmx.process(statusPoller);

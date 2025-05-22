@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { streamSSE } from 'hono/streaming';
 import puppeteer from '@cloudflare/puppeteer';
 import { formatAccessibilityResults, isValidUrl, performAccessibilityTest, setupPage, updateTestStatus } from './utils';
 import { renderer } from './renderer';
@@ -19,16 +20,52 @@ app.get('/', (c) => c.render(<Home />));
 
 // ACCESSIBILITY TESTING
 
-app.get('/api/accessibility/:id', async (c) => {
+app.get('/api/accessibility/status/:id', async (c) => {
 	const id = c.req.param('id');
 
-	const status = await c.env.KV.get(id);
+	// id for each message
+	let count = 1;
+	let status = 'unknown';
 
-	if (status?.includes('failed')) {
-		return c.html(<span></span>);
-	}
+	return streamSSE(c, async (stream) => {
+		// continually stream the status of the test until it is completed or failed
+		while (status !== 'completed' && !status?.includes('failed')) {
+			status = (await c.env.KV.get(id!)) || 'unknown';
 
-	return c.html(<span>{`${status}...`}</span>);
+			// make sure connection closes for non existing ids after 2.5s
+			if (status === 'unknown' && count > 5) {
+				await stream.writeSSE({
+					data: status,
+					event: 'fulfilled',
+					id: String(count++),
+				});
+				break;
+			}
+
+			// if status is unknown, send unknown event so content is not swapped
+			if (status === 'unknown') {
+				await stream.writeSSE({
+					data: status,
+					event: 'unknown',
+					id: String(count++),
+				});
+				await stream.sleep(500);
+				continue;
+			}
+
+			await stream.writeSSE({
+				data: status,
+				event: 'status-update',
+				id: String(count++),
+			});
+			await stream.sleep(500);
+		}
+		// send the final status to close the connection
+		await stream.writeSSE({
+			data: status,
+			event: 'fulfilled',
+		});
+	});
 });
 
 app.post('api/accessibility', async (c) => {
