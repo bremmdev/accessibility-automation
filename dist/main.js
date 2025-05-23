@@ -38,7 +38,7 @@ document.body.addEventListener('htmx:configRequest', function (event) {
 		const id = crypto.randomUUID();
 		event.detail.parameters.id = id;
 
-		// Set the form status poller to check the status of the request
+		// Set up SSE to receive status updates from server
 		addPollingAttributes(id);
 	}
 });

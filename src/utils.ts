@@ -106,8 +106,7 @@ export async function performAccessibilityTest(page: Page, targetUrl: string, id
 }
 
 export async function updateTestStatus(KV: KVNamespace, id: string, status: string) {
-	// Update the status of the test in the database or any other storage
-	// This is a placeholder function, implement your own logic here
-	console.log(`Test ID: ${id}, Status: ${status}`);
-	await KV.put(id, status);
+	await KV.put(id, status, {
+		expirationTtl: 600, // 10 minutes
+	});
 }
