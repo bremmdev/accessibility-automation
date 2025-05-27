@@ -86,7 +86,7 @@ app.post('api/accessibility', async (c) => {
 			});
 
 		// If it's an HTMX request, return the form with an error message
-		c.header('HX-Retarget', '#accessibility-form');
+		c.header('HX-Retarget', '#accessibility-form-container');
 		c.header('HX-Reswap', 'outerHTML');
 		return c.html(<AccessibilityTestForm error="Invalid URL format." url={targetUrl} blocklist={blocklist} />);
 	}
@@ -120,7 +120,7 @@ app.post('api/accessibility', async (c) => {
 			});
 
 		// If it's an HTMX request, return the form with an error message
-		c.header('HX-Retarget', '#accessibility-form');
+		c.header('HX-Retarget', '#accessibility-form-container');
 		c.header('HX-Reswap', 'outerHTML');
 		return c.html(<AccessibilityTestForm error={`Error during execution: ${e.message}`} url={targetUrl} blocklist={blocklist} />);
 	}

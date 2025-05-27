@@ -3,3 +3,8 @@
 button:not(:disabled) {
 	cursor: pointer;
 }
+
+@theme {
+	--color-blue-primary: oklch(57.15% 0.235 261.56);
+	--color-blue-secondary: oklch(51.83% 0.195 258.31);
+}

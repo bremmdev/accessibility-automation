@@ -1,4 +1,5 @@
 import { jsxRenderer } from 'hono/jsx-renderer';
+import Header from './components/Header';
 
 export const renderer = jsxRenderer(({ children }) => {
 	return (
@@ -11,7 +12,8 @@ export const renderer = jsxRenderer(({ children }) => {
 				<script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
 			</head>
 			<body>
-				<main className="max-w-7xl w-11/12 mx-auto">{children}</main>
+				<Header />
+				<main class="max-w-7xl w-11/12 mx-auto text-slate-950">{children}</main>
 			</body>
 		</html>
 	);
