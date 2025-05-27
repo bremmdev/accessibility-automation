@@ -24,7 +24,7 @@
 	},
 	"routes": [
 		{
-			"pattern": "a11y-test.bremmdev.me",
+			"pattern": "accessicheck.bremmdev.me",
 			"custom_domain": true
 		}
 	],
