@@ -359,6 +359,15 @@
   .border-red-300 {
     border-color: var(--color-red-300);
   }
+  .border-t-primary-text {
+    border-top-color: var(--color-primary-text);
+  }
+  .border-t-primary-text\/50 {
+    border-top-color: color-mix(in srgb, oklch(12.9% 0.042 264.695) 50%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-top-color: color-mix(in oklab, var(--color-primary-text) 50%, transparent);
+    }
+  }
   .bg-primary {
     background-color: var(--color-primary);
   }

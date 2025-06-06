@@ -55,7 +55,7 @@ export default function AccessibilityTestForm({ url, blocklist, error }: Props) 
 							Start Accessibility Test
 							{/* Spinner Overlay: shown when form has 'htmx-request' class */}
 							<span class="absolute inset-0 bg-primary hidden group-[.htmx-request]:flex items-center justify-center z-10 rounded-lg">
-								<span class="animate-spin rounded-full border-2 border-primary-text/50 border-t-2 border-t-primary/text size-6"></span>
+								<span class="animate-spin rounded-full border-2 border-primary-text/50 border-t-2 border-t-primary-text size-6"></span>
 							</span>
 						</button>
 						<span id="accessibility-form-status" class="block mt-3 text-gray-600"></span>
