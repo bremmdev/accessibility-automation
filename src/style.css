@@ -5,6 +5,7 @@ button:not(:disabled) {
 }
 
 @theme {
-	--color-blue-primary: oklch(57.15% 0.235 261.56);
-	--color-blue-secondary: oklch(51.83% 0.195 258.31);
+	--color-primary: oklch(87.42% 0.143 87.01); /* FECF5A, yellow */
+	--color-secondary: oklch(64.6% 0.142 253.92); /* muted blue */
+	--color-primary-text: oklch(12.9% 0.042 264.695); /* slate-950 */
 }

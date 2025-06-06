@@ -13,7 +13,7 @@ export const renderer = jsxRenderer(({ children }) => {
 			</head>
 			<body>
 				<Header />
-				<main class="max-w-7xl w-11/12 mx-auto text-slate-950">{children}</main>
+				<main class="max-w-7xl w-11/12 mx-auto text-primary-text">{children}</main>
 			</body>
 		</html>
 	);

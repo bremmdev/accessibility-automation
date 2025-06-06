@@ -26,7 +26,7 @@ export default function AccessibilityTestForm({ url, blocklist, error }: Props) 
 							type="text"
 							name="url"
 							id="url"
-							class="border border-gray-300 p-3 rounded-md w-full shadow-sm focus:ring-blue-primary focus:border-blue-primary"
+							class="border border-gray-300 p-3 rounded-md w-full shadow-sm outline-none focus-visible:ring-secondary focus-visible:border-secondary"
 							placeholder="Enter URL to test"
 							value={url ?? ''}
 						/>
@@ -39,7 +39,7 @@ export default function AccessibilityTestForm({ url, blocklist, error }: Props) 
 						<textarea
 							name="blocklist"
 							id="blocklist"
-							class="border border-gray-300 p-3 rounded-md w-full shadow-sm focus:ring-blue-primary focus:border-blue-primary"
+							class="border border-gray-300 p-3 rounded-md w-full shadow-sm outline-none focus-visible:ring-secondary focus-visible:border-secondary"
 							placeholder="Enter blocklist (one per line)"
 							rows={7}
 						>
@@ -50,12 +50,12 @@ export default function AccessibilityTestForm({ url, blocklist, error }: Props) 
 					<div class="pt-2 text-center">
 						<button
 							type="submit"
-							class="bg-blue-primary text-white px-8 py-3 rounded-lg shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 hover:bg-blue-primary/80 focus:ring-blue-primary font-semibold text-base relative disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150 ease-in-out"
+							class="bg-primary px-8 py-3 rounded-lg shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 hover:bg-primary/80 focus:ring-primary font-semibold text-base relative disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150 ease-in-out"
 						>
 							Start Accessibility Test
 							{/* Spinner Overlay: shown when form has 'htmx-request' class */}
-							<span class="absolute inset-0 bg-blue-primary hidden group-[.htmx-request]:flex items-center justify-center z-10 rounded-lg">
-								<span class="animate-spin rounded-full border-2 border-white/50 border-t-2 border-t-white size-6"></span>
+							<span class="absolute inset-0 bg-primary hidden group-[.htmx-request]:flex items-center justify-center z-10 rounded-lg">
+								<span class="animate-spin rounded-full border-2 border-primary-text/50 border-t-2 border-t-primary/text size-6"></span>
 							</span>
 						</button>
 						<span id="accessibility-form-status" class="block mt-3 text-gray-600"></span>
